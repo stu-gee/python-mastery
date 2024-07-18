@@ -1,0 +1,44 @@
+import readrides
+from collections import defaultdict, Counter
+
+rows = readrides.read_rides_as_dicts('../../Data/ctabus.csv')
+
+totals = Counter()
+
+
+# How many bus routes exist in Chicago?
+
+bus_routes = { s['route'] for s in rows}
+print(len(bus_routes))
+
+routes = set()
+for row in rows:
+    routes.add(row['route'])
+print(len(routes), 'routes')
+
+#How many people rode the number 22 bus on February 2, 2011? 
+date = "02/02/2011"
+route = "22"
+rides = [s['rides'] for s in rows if s['route'] == route and s['date'] == date]
+print(rides)
+
+
+# What about any route on any date of your choosing?
+
+# What is the total number of rides taken on each bus route?
+route_totals = { s['route']: 0 for s in rows }
+for s in rows:
+    route_totals[s['route']] += s['rides']
+
+print(route_totals)
+
+# What five bus routes had the greatest ten-year increase in ridership from 2001 to 2011?
+
+rides_by_year = defaultdict(Counter)
+for row in rows:
+    year = row['date'].split('/')[2]
+    rides_by_year[year][row['route']] += row['rides']
+
+diffs = rides_by_year['2011'] - rides_by_year['2001']
+for route, diff in diffs.most_common(5):
+    print(route, diff)
