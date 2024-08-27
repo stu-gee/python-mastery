@@ -6,4 +6,3 @@ def parse_line(line:str):
     
     return(name, val)
 
-
